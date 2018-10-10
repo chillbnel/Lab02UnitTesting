@@ -6,57 +6,88 @@ namespace Lab02UnitTesting
     {
         static void Main(string[] args)
         {
-            HomeScreen();
+            double currentBalance = 5000;
+            HomeScreen(currentBalance);
         }
 
-        static void HomeScreen()
+        static void HomeScreen(double currentBalance)
         {
             string userEntry;
-            int userEntryInt = 0;
 
             Console.WriteLine("Welcome to BANK Corps ATM, Please select from the following:\n" +
                 "1. View Balance\n" +
                 "2. Withdraw Money\n" +
                 "3. Add Money\n" +
-                "4. Exit\n");
+                "4. Exit\n" +
+                "Enter 1, 2, 3, or 4 to continue");
 
             userEntry = Console.ReadLine();
-
-            switch (userEntryInt)//takes user to the selected action
-            {
-                case 1:
-                    Console.WriteLine("Your current balance is :" + ViewBalance());
-                    break;
-                case 2:
-                    Console.WriteLine("How much would you like to withdraw? (Up to " + ViewBalance() + "): ");
-                   
-                    double userWithdrawl = Console.ReadLine();
-                    do
-                    {
-                        Console.WriteLine("Insuffiecent funds. How much would you like to withdraw? (Up to " + ViewBalance() + "): ");
-                        userWithdrawl = Console.ReadLine();
-                    } while (userWithdrawl > ViewBalance());
-
-                    break;
-                case 3:
-                    break;
-                default:
-                    break;
-            }
+            MenuSelect(userEntry, currentBalance);
         }
 
-        static double ViewBalance()
+        static void MenuSelect(string userEntry, double currentBalance)
         {
-            return 5000;
+            int userEntryInt = 0;
+            if (int.TryParse(userEntry, out userEntryInt))
+            {
+                switch (userEntryInt)
+                {
+                    case 1:
+                        ViewBalance(currentBalance);
+                        break;
+                    case 2:
+                        currentBalance = WithdrawMoney(currentBalance);
+                        break;
+                    case 3:
+                        currentBalance = DepositMoney(currentBalance);
+                        break;
+                    default:
+                        break;
+                }
+            }
+          HomeScreen(currentBalance);
+        }
+
+        static void ViewBalance(double currentBalance)
+        {
+            Console.WriteLine("Your current balance is :" + currentBalance + ". Hit 'Enter' to return to main menu.");
+            Console.ReadLine();
         } 
 
-        static double WithdrawMoney(double amountWithdrawn)
+        static double WithdrawMoney(double currentBalance)
         {
-            if (ViewBalance() > amountWithdrawn)
+            double newBalance = 0;
+            Console.WriteLine("How much would you like to withdraw? (Up to " + currentBalance + "): ");
+
+            double userWithdrawl = Convert.ToDouble(Console.ReadLine());
+
+            do
             {
-                return (ViewBalance() - amountWithdrawn);
-            }
-            return (ViewBalance() - amountWithdrawn);
+                Console.WriteLine("Insuffiecent funds. How much would you like to withdraw? (Up to " + currentBalance + "): ");
+                userWithdrawl = Convert.ToDouble(Console.ReadLine());
+            } while (userWithdrawl > currentBalance);
+
+            newBalance = currentBalance - userWithdrawl;
+
+            Console.WriteLine("Please take your " + userWithdrawl + " below.  Your remaining balance is: " + newBalance + ". Hit 'Enter' to continue.");
+            Console.ReadLine();
+
+            return newBalance;
+        }
+
+        static double DepositMoney(double currentBalance)
+        {
+            double newBalance = 0;
+            Console.WriteLine("How much would you like to deposit? ");
+
+            double userWithdrawl = Convert.ToDouble(Console.ReadLine());
+
+            newBalance = currentBalance - userWithdrawl;
+
+            Console.WriteLine("Your new balance is: " + newBalance + ". Hit 'Enter' to continue.");
+            Console.ReadLine();
+
+            return newBalance;
         }
     }
 }
