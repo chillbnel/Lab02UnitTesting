@@ -1,6 +1,6 @@
 using System;
 using Xunit;
-using Lab02UnitTesting;
+using static Lab02UnitTesting.Program;
 
 namespace ATMTest
 {

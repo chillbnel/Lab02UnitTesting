@@ -49,11 +49,19 @@ namespace Lab02UnitTesting
                         break;
                     case 2:
                         Console.Clear();
-                        currentBalance = WithdrawMoney(currentBalance);
+                        Console.WriteLine("WITHDRAW FUNDS\n" +
+                                          "How much would you like to withdraw? (Up to " + currentBalance + "): ");
+                        double userWithdrawl = Convert.ToDouble(Console.ReadLine());
+                        currentBalance = WithdrawMoney(currentBalance, userWithdrawl);
+                        Console.WriteLine("Please take your " + userWithdrawl + " below.  Your remaining balance is: " + currentBalance + ". Hit 'Enter' to continue.");
+                        Console.ReadLine();
                         break;
                     case 3:
                         Console.Clear();
-                        currentBalance = DepositMoney(currentBalance);
+                        Console.WriteLine("DEPOSIT FUNDS\n" +
+                                          "How much would you like to deposit? ");
+                        double userDeposit = Convert.ToDouble(Console.ReadLine());
+                        currentBalance = DepositMoney(currentBalance, userDeposit);
                         break;
                     default:
                         break;
@@ -80,40 +88,30 @@ namespace Lab02UnitTesting
         /// </summary>
         /// <param name="currentBalance">The user's current account balance</param>
         /// <returns>The new account balance</returns>
-        static double WithdrawMoney(double currentBalance)
+        static double WithdrawMoney(double currentBalance, double userWithdrawl)
         {
-            double newBalance = 0;
-            double userWithdrawl = 0;
-
-            Console.WriteLine("WITHDRAW FUNDS\n"+
-                "How much would you like to withdraw? (Up to " + currentBalance + "): ");
             try
             {
-                userWithdrawl = Convert.ToDouble(Console.ReadLine());
+                while (userWithdrawl > currentBalance)
+                {
+                    Console.Clear();
+                    Console.WriteLine("WITHDRAW FUNDS\n" + 
+                        "Insuffiecent funds. How much would you like to withdraw? (Up to " + currentBalance + "): ");
+                    userWithdrawl = Convert.ToDouble(Console.ReadLine());
+                } 
+
+                currentBalance = currentBalance - userWithdrawl;
+                
             }
             catch (FormatException e)
             {
                 Console.WriteLine(e.Message + ". Please enter a number. Hit 'Enter' to continue.");
                 Console.ReadLine();
                 Console.Clear();
-                WithdrawMoney(currentBalance);
+                WithdrawMoney(currentBalance, userWithdrawl);
             }
 
-
-            while (userWithdrawl > currentBalance)
-            {
-                Console.Clear();
-                Console.WriteLine("WITHDRAW FUNDS\n" + 
-                    "Insuffiecent funds. How much would you like to withdraw? (Up to " + currentBalance + "): ");
-                userWithdrawl = Convert.ToDouble(Console.ReadLine());
-            } 
-
-            newBalance = currentBalance - userWithdrawl;
-
-            Console.WriteLine("Please take your " + userWithdrawl + " below.  Your remaining balance is: " + newBalance + ". Hit 'Enter' to continue.");
-            Console.ReadLine();
-
-            return newBalance;
+            return currentBalance;
         }
 
         /// <summary>
@@ -121,31 +119,24 @@ namespace Lab02UnitTesting
         /// </summary>
         /// <param name="currentBalance">The user's current account balance</param>
         /// <returns>The new account balance</returns>
-        static double DepositMoney(double currentBalance)
+        static double DepositMoney(double currentBalance, double userDeposit)
         {
             double newBalance = 0;
-            double userDeposit = 0;
-
-            Console.WriteLine("DEPOSIT FUNDS\n" +
-                "How much would you like to deposit? ");
 
             try
             {
-                userDeposit = Convert.ToDouble(Console.ReadLine());
+                newBalance = currentBalance + userDeposit;
+
+                Console.WriteLine("Your new balance is: " + newBalance + ". Hit 'Enter' to continue.");
+                Console.ReadLine();
             }
             catch (FormatException e)
             {
                 Console.WriteLine(e.Message + ". Please enter a number. Hit 'Enter' to continue.");
                 Console.ReadLine();
                 Console.Clear();
-                DepositMoney(currentBalance);
+                DepositMoney(currentBalance, userDeposit);
             }
-
-
-            newBalance = currentBalance + userDeposit;
-
-            Console.WriteLine("Your new balance is: " + newBalance + ". Hit 'Enter' to continue.");
-            Console.ReadLine();
 
             return newBalance;
         }
