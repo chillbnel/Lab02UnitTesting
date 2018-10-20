@@ -4,7 +4,7 @@ namespace Lab02UnitTesting
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             double currentBalance = 5000;
             HomeScreen(currentBalance);
@@ -16,7 +16,6 @@ namespace Lab02UnitTesting
         /// <param name="currentBalance">The user's current account balance</param>
         static void HomeScreen(double currentBalance)
         {
-            string userEntry;
 
             Console.WriteLine("Welcome to BANK Corps ATM, Please select from the following:\n" +
                 "MAIN MENU\n" +
@@ -25,9 +24,16 @@ namespace Lab02UnitTesting
                 "3. Add Money\n" +
                 "4. Exit\n" +
                 "Enter 1, 2, 3, or 4 to continue");
+            try
+            {
+                int userEntry = int.Parse(Console.ReadLine());
+                MenuSelect(userEntry, currentBalance);
+            }
+            catch
+            {
 
-            userEntry = Console.ReadLine();
-            MenuSelect(userEntry, currentBalance);
+            }
+
         }
 
         /// <summary>
@@ -35,13 +41,9 @@ namespace Lab02UnitTesting
         /// </summary>
         /// <param name="userEntry">Menu item selected</param>
         /// <param name="currentBalance">The user's current account balance</param>
-        static void MenuSelect(string userEntry, double currentBalance)
+        static void MenuSelect(int userEntry, double currentBalance)
         {
-            int userEntryInt = 0;
-
-            if (int.TryParse(userEntry, out userEntryInt))
-            {
-                switch (userEntryInt)
+                switch (userEntry)
                 {
                     case 1:
                         Console.Clear();
@@ -62,13 +64,12 @@ namespace Lab02UnitTesting
                                           "How much would you like to deposit? ");
                         double userDeposit = Convert.ToDouble(Console.ReadLine());
                         currentBalance = DepositMoney(currentBalance, userDeposit);
+                        Console.WriteLine("Your new balance is: " + currentBalance + ". Hit 'Enter' to continue.");
+                        Console.ReadLine();
                         break;
                     default:
                         break;
                 }
-            }
-
-            Console.Clear();
             HomeScreen(currentBalance);
         }
 
@@ -88,27 +89,15 @@ namespace Lab02UnitTesting
         /// </summary>
         /// <param name="currentBalance">The user's current account balance</param>
         /// <returns>The new account balance</returns>
-        static double WithdrawMoney(double currentBalance, double userWithdrawl)
+        public static double WithdrawMoney(double currentBalance, double userWithdrawl)
         {
-            try
+            if (userWithdrawl > currentBalance)
             {
-                while (userWithdrawl > currentBalance)
-                {
-                    Console.Clear();
-                    Console.WriteLine("WITHDRAW FUNDS\n" + 
-                        "Insuffiecent funds. How much would you like to withdraw? (Up to " + currentBalance + "): ");
-                    userWithdrawl = Convert.ToDouble(Console.ReadLine());
-                } 
-
-                currentBalance = currentBalance - userWithdrawl;
-                
+                throw new Exception("You do not have enough money in your account to withdraw this amount.");
             }
-            catch (FormatException e)
+            else
             {
-                Console.WriteLine(e.Message + ". Please enter a number. Hit 'Enter' to continue.");
-                Console.ReadLine();
-                Console.Clear();
-                WithdrawMoney(currentBalance, userWithdrawl);
+                currentBalance = currentBalance - userWithdrawl;
             }
 
             return currentBalance;
@@ -119,26 +108,18 @@ namespace Lab02UnitTesting
         /// </summary>
         /// <param name="currentBalance">The user's current account balance</param>
         /// <returns>The new account balance</returns>
-        static double DepositMoney(double currentBalance, double userDeposit)
+        public static double DepositMoney(double currentBalance, double userDeposit)
         {
-            double newBalance = 0;
-
-            try
+            if (userDeposit > 0)
             {
-                newBalance = currentBalance + userDeposit;
-
-                Console.WriteLine("Your new balance is: " + newBalance + ". Hit 'Enter' to continue.");
-                Console.ReadLine();
+                currentBalance = currentBalance + userDeposit;
             }
-            catch (FormatException e)
+            else
             {
-                Console.WriteLine(e.Message + ". Please enter a number. Hit 'Enter' to continue.");
-                Console.ReadLine();
-                Console.Clear();
-                DepositMoney(currentBalance, userDeposit);
+                throw new Exception("Please enter a positive amount to deposit.");
             }
 
-            return newBalance;
+            return currentBalance;
         }
     }
 }
